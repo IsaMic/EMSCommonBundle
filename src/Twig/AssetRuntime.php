@@ -157,8 +157,12 @@ class AssetRuntime
         $cacheFilename = $this->cacheDir.DIRECTORY_SEPARATOR.'ems_asset_path'.DIRECTORY_SEPARATOR.$hashConfig.DIRECTORY_SEPARATOR.$hash;
 
         if (!$filesystem->exists($cacheFilename)) {
-            $stream = $this->processor->getStream($configObj, $filename);
-            \file_put_contents($cacheFilename, $stream->getContents());
+            try {
+                $stream = $this->processor->getStream($configObj, $filename);
+                \file_put_contents($cacheFilename, $stream->getContents());
+            } catch (\Throwable $e) {
+                $this->logger->error('Generate the {cacheFilename} failed : {error}', ['hash' => $hash, 'cacheFilename' => $cacheFilename, 'error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            }
         }
 
         return $cacheFilename;
@@ -189,9 +193,9 @@ class AssetRuntime
             if (false === $rgb) {
                 throw new \RuntimeException('Unexpected imagecolorsforindex error');
             }
-            $red = \round(\round((($rgb['red'] ?? 255) / 0x33)) * 0x33);
-            $green = \round(\round((($rgb['green'] ?? 255) / 0x33)) * 0x33);
-            $blue = \round(\round((($rgb['blue'] ?? 255) / 0x33)) * 0x33);
+            $red = \round(\round(($rgb['red'] ?? 255) / 0x33) * 0x33);
+            $green = \round(\round(($rgb['green'] ?? 255) / 0x33) * 0x33);
+            $blue = \round(\round(($rgb['blue'] ?? 255) / 0x33) * 0x33);
 
             return \sprintf('#%02X%02X%02X', $red, $green, $blue);
         } catch (\Throwable $e) {

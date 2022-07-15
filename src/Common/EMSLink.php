@@ -30,7 +30,7 @@ class EMSLink
      * Example: <a href="ems://object:page:AV44kX4b1tfmVMOaE61u">example</a>
      * link_type => object, content_type => page, ouuid => AV44kX4b1tfmVMOaE61u
      */
-    public const PATTERN = '/((?P<src>src="))?ems:\/\/(?P<link_type>.*?):(?:(?P<content_type>([[:alnum:]]|_)*?):)?(?P<ouuid>([[:alnum:]]|-|_)*)(?:\?(?P<query>(?:[^"|\'|\s]*)))?/';
+    public const PATTERN = '/((?P<src>src="))?ems:\/\/(?P<link_type>.*?):(?:(?P<content_type>([[:alnum:]]|_)*?):)?(?P<ouuid>([[:alnum:]]|-|_)*)(?:\?(?P<query>(?:[^"|\']*)))?/';
     public const SIMPLE_PATTERN = '/(?:(?P<content_type>.*?):)?(?P<ouuid>([[:alnum:]]|-|_)*)/';
 
     private function __construct()
@@ -111,9 +111,9 @@ class EMSLink
     {
         return \vsprintf('ems://%s:%s%s%s', [
             $this->linkType,
-            ($this->contentType ? $this->contentType.':' : ''),
+            $this->contentType ? $this->contentType.':' : '',
             $this->ouuid,
-            ($this->query ? '?'.$this->query : ''),
+            $this->query ? '?'.$this->query : '',
         ]);
     }
 

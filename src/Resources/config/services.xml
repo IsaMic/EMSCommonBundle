@@ -16,6 +16,7 @@
         <service id="ems_common.core_api.factory" class="EMS\CommonBundle\Common\CoreApi\CoreApiFactory">
             <argument type="service" id="logger" />
             <argument type="service" id="ems_common.storage.manager" />
+            <argument>%ems_common.backend_api_insecure%</argument>
         </service>
 
         <!-- use this factory services, it will set the tracer to common.ems.logger -->
@@ -46,7 +47,11 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="ems_common.text.encoder" class="EMS\CommonBundle\Helper\Text\Encoder"/>
+        <service id="ems_common.text.encoder" class="EMS\CommonBundle\Helper\Text\Encoder">
+            <argument type="string">%ems_common.webalize.removable_regex%</argument>
+            <argument type="string">%ems_common.webalize.dashable_regex%</argument>
+            <tag name="twig.runtime" />
+        </service>
         <service id="ems_common.helper.cache" class="EMS\CommonBundle\Helper\Cache">
             <argument type="string">%ems_common.hash_algo%</argument>
         </service>
@@ -61,19 +66,6 @@
         <service id="ems_common.service.elastica" class="EMS\CommonBundle\Service\ElasticaService">
             <argument type="service" id="logger" />
             <argument type="service" id="ems_common.elastica.client" />
-        </service>
-        <service id="ems_common.monolog.doctrine" class="EMS\CommonBundle\Helper\Logger\DoctrineHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager" />
-            <argument type="service" id="security.token_storage" />
-            <argument type="string">%ems_common.log_level%</argument>
-        </service>
-        <service id="ems_common.repository.log" class="EMS\CommonBundle\Repository\LogRepository" public="true">
-            <argument type="service" id="doctrine"/>
-        </service>
-        <service id="ems.logger" alias="ems_common.localized_logger"/>
-        <service id="ems_common.localized_logger" class="EMS\CommonBundle\Helper\Log\LocalizedLogger">
-            <argument type="service" id="logger" />
-            <argument type="service" id="translator" />
         </service>
         <service id="ems.helper.admin_api" class="EMS\CommonBundle\Common\Admin\AdminHelper">
             <argument type="service" id="ems_common.core_api.factory" />
